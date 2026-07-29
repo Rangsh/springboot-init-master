@@ -18,23 +18,50 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 20MB
-  # 本地 MySQL
+  # 本地 MySQL + Druid
   datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/springboot_init?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: 123456
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 2
-      connection-timeout: 5000
-      pool-name: SpringbootInitHikariPool
-  # 本地 Redis
+    druid:
+      initial-size: 2
+      min-idle: 2
+      max-active: 10
+      max-wait: 5000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,slf4j
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true
+          slow-sql-millis: 1000
+        wall:
+          enabled: true
+        slf4j:
+          enabled: true
+      # 本地监控页：http://localhost:8101/api/druid/index.html（账号见下）
+      web-stat-filter:
+        enabled: true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: admin
+        reset-enable: false
+  # 本地 Redis（默认无密码；需要时再加 password）
   data:
     redis:
       host: 127.0.0.1
       port: 6379
-      password:
       database: 0
       timeout: 10s
       lettuce:
@@ -67,33 +94,15 @@ sa-token:
   is-read-header: true
   is-read-body: false
   token-prefix: Bearer
-  is-print: false
+  is-print: true
 
+# Knife4j 文档页（/doc.html）+ springdoc 生成 OpenAPI
 springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    tags-sorter: alpha
-    operations-sorter: alpha
   api-docs:
     path: /v3/api-docs
     enabled: true
-  group-configs:
-    - group: default
-      display-name: 默认接口
-      paths-to-match: /**
-      packages-to-scan: com.ttk.springbootinit.controller
-
-knife4j:
-  enable: true
-  setting:
-    language: zh_cn
-    enable-swagger-models: true
-    enable-document-manage: true
-    swagger-model-name: 实体类列表
-  # 本地开发关闭文档 Basic 认证；上线可在 prod 打开
-  production: false
-  basic:
-    enable: false
+  packages-to-scan: com.ttk.springbootinit.controller
+  paths-to-match: /**
 
 management:
   endpoints:

@@ -39,12 +39,14 @@ public class SaTokenConfig implements WebMvcConfigurer {
                         "/error",
                         "/favicon.ico",
                         "/actuator/**",
+                        "/druid/**",
+                        // Knife4j
                         "/doc.html",
                         "/webjars/**",
                         "/v3/api-docs",
                         "/v3/api-docs/**",
-                        "/swagger-ui.html",
-                        "/swagger-ui/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
                         "/test/**",
                         "/user/login",
                         "/user/register"

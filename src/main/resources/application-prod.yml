@@ -6,6 +6,16 @@ spring:
     url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:springboot_init}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=true
     username: ${MYSQL_USERNAME}
     password: ${MYSQL_PASSWORD}
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      # 生产关闭 Web 监控页，避免暴露连接池信息
+      web-stat-filter:
+        enabled: false
+      stat-view-servlet:
+        enabled: false
   data:
     redis:
       host: ${REDIS_HOST}
@@ -31,9 +41,10 @@ management:
       probes:
         enabled: true
 
-knife4j:
-  enable: false
-  production: true
+# 生产关闭文档
+springdoc:
+  api-docs:
+    enabled: false
 
 cos:
   enabled: ${COS_ENABLED:false}

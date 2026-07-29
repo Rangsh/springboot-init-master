@@ -6,6 +6,12 @@
 
 [![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk)](https://openjdk.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-green?logo=springboot)](https://spring.io/projects/spring-boot)
+[![MySQL](https://img.shields.io/badge/MySQL-8-blue?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![Redis](https://img.shields.io/badge/Redis-red?logo=redis&logoColor=white)](https://redis.io/)
+[![MyBatis-Plus](https://img.shields.io/badge/MyBatis--Plus-3.5.9-blue)](https://baomidou.com/)
+[![Sa-Token](https://img.shields.io/badge/Sa--Token-1.39.0-brightgreen)](https://sa-token.cc/)
+[![Druid](https://img.shields.io/badge/Druid-1.2.25-orange)](https://github.com/alibaba/druid)
+[![Knife4j](https://img.shields.io/badge/Knife4j-4.5.0-green)](https://doc.xiaominfo.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 ## 模版定位
@@ -21,7 +27,7 @@
 - 全局异常处理（参数校验、业务异常、Sa-Token 未登录/无权限）
 - 请求追踪 `traceId`（MDC + 响应头 `X-Trace-Id`）
 - Sa-Token + Redis 会话，接口文档 Knife4j（OpenAPI3）
-- MyBatis-Plus（分页、逻辑删除、字段自动填充）
+- MyBatis-Plus（分页、逻辑删除、字段自动填充）+ Druid 连接池（本地可开监控页）
 - Redis / Redisson、腾讯云 COS（默认关闭，开关启用）
 - 多环境配置：`dev` / `prod`
 - 扩展占位：`mcp-server/`、`skills/`、`sql/`、Docker 相关文件
@@ -34,10 +40,11 @@
 | 框架 | Spring Boot | 3.4.4 |
 | ORM | MyBatis-Plus | 3.5.9 |
 | 数据库 | MySQL 8（`mysql-connector-j`） | Boot 3.4.4 管理 |
+| 连接池 | Alibaba Druid（`druid-spring-boot-3-starter`） | 1.2.25 |
 | 缓存 / 锁 | Redis + Lettuce 连接池（`commons-pool2`） | Boot 管理 / 2.12.1 |
 | 缓存 / 锁 | Redisson | 3.27.2 |
 | 鉴权 | Sa-Token + Redis Jackson | 1.39.0 |
-| 文档 | Knife4j OpenAPI3 Jakarta | 4.5.0 |
+| 文档 | Knife4j UI + springdoc（兼容 Boot 3.4） | 4.5.0 / 2.8.17 |
 | Web 能力 | Validation / AOP / Actuator | Boot 3.4.4 管理 |
 | JSON | Jackson（含 jsr310，Boot BOM 管理，当前 2.18.3） | Boot 3.4.4 管理 |
 | 工具 | Hutool | 5.8.27 |
@@ -53,11 +60,11 @@ springboot-init-master/
 ├── pom.xml
 ├── mvnw / .mvn/                 # Maven Wrapper
 ├── lombok.config
-├── LICENSE                      # Apache-2.0
+├── LICENSE / NOTICE             # Apache-2.0 与署名
 ├── sql/                         # 建表脚本（按需补充）
 ├── mcp-server/                  # 独立 MCP Server 预留（暂不参与构建）
 ├── skills/                      # Agent Skill 预留（无运行时依赖）
-├── Dockerfile / docker-compose  # 部署预留
+├── Dockerfile / docker-compose  # 部署预留（当前为空壳占位）
 └── src/main/
     ├── java/com/ttk/springbootinit/
     │   ├── MainApplication.java
@@ -68,7 +75,7 @@ springboot-init-master/
     │   │   ├── util/
     │   │   └── web/             # 全局异常、TraceId
     │   ├── config/
-    │   │   ├── web/             # CORS、Jackson、OpenAPI
+    │   │   ├── web/             # CORS、Jackson、OpenAPI、Knife4j 配置端点
     │   │   ├── database/        # MP 分页与自动填充
     │   │   ├── auth/            # Sa-Token
     │   │   └── oss/             # COS
@@ -78,8 +85,9 @@ springboot-init-master/
         ├── application.yml
         ├── application-dev.yml
         ├── application-prod.yml
+        ├── banner.txt
         ├── mapper/
-        └── prompt/
+        └── prompt/              # 可选 prompt 文本占位
 ```
 
 业务代码建议按领域分包（如 `user`、`order`），与 `common` / `config` 并列，保持单体清晰边界。
@@ -97,7 +105,7 @@ springboot-init-master/
 默认即本地开发配置，直接改 `src/main/resources/application.yml`：
 
 - MySQL：`127.0.0.1:3306/springboot_init`，账号 `root` / `123456`
-- Redis：`127.0.0.1:6379`
+- Redis：`127.0.0.1:6379`（默认无密码；若本机开了 `requirepass`，改 `spring.data.redis.password`）
 - 端口：`8101`，上下文：`/api`
 - 默认 profile：`dev`（会打印 SQL）
 
@@ -114,12 +122,12 @@ springboot-init-master/
 
 | 用途 | 地址 |
 |------|------|
-| 接口文档 | http://localhost:8101/api/doc.html |
+| Knife4j 文档 | http://localhost:8101/api/doc.html |
 | 测试接口 | http://localhost:8101/api/test/ping |
-| OpenAPI | http://localhost:8101/api/v3/api-docs |
+| Druid 监控 | http://localhost:8101/api/druid/index.html（`admin` / `admin`） |
 | 健康检查 | http://localhost:8101/api/actuator/health |
 
-> 默认开启 Sa-Token 登录校验；文档、Actuator、`/test/**`，以及预留的 `/user/login`、`/user/register` 已放行。
+> 默认开启 Sa-Token 登录校验；Knife4j、Actuator、Druid 监控、`/test/**`，以及预留的 `/user/login`、`/user/register` 已放行。本地文档地址见上；生产默认关闭 springdoc。
 
 ## 使用约定（简要）
 
@@ -136,4 +144,6 @@ springboot-init-master/
 
 ## License
 
-[Apache License 2.0](./LICENSE)
+Copyright 2026 Rangsh
+
+本项目基于 [Apache License 2.0](./LICENSE) 开源，署名信息见 [NOTICE](./NOTICE)。

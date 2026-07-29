@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Knife4j / OpenAPI 文档信息
+ * Knife4j 文档信息（OpenAPI Info）
  *
  * @author Rangsh
  */
