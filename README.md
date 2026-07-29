@@ -33,11 +33,16 @@
 | 运行时 | Java | 17 |
 | 框架 | Spring Boot | 3.4.4 |
 | ORM | MyBatis-Plus | 3.5.9 |
-| 数据库 | MySQL 8（`mysql-connector-j`） | Boot 管理 |
-| 缓存 / 锁 | Redis、Lettuce 连接池、Redisson | 3.27.2 |
+| 数据库 | MySQL 8（`mysql-connector-j`） | Boot 3.4.4 管理 |
+| 缓存 / 锁 | Redis + Lettuce 连接池（`commons-pool2`） | Boot 管理 / 2.12.1 |
+| 缓存 / 锁 | Redisson | 3.27.2 |
 | 鉴权 | Sa-Token + Redis Jackson | 1.39.0 |
 | 文档 | Knife4j OpenAPI3 Jakarta | 4.5.0 |
-| 工具 | Hutool、Lombok、OkHttp、Validation、AOP、Actuator | — |
+| Web 能力 | Validation / AOP / Actuator | Boot 3.4.4 管理 |
+| JSON | Jackson（含 jsr310，Boot BOM 管理，当前 2.18.3） | Boot 3.4.4 管理 |
+| 工具 | Hutool | 5.8.27 |
+| 工具 | Lombok | 1.18.36（Boot 管理） |
+| HTTP | OkHttp | 4.12.0 |
 | 对象存储 | 腾讯云 COS（`cos.enabled=true` 时启用） | 5.6.227 |
 | 扩展 | MCP SDK | 1.1.2 |
 
@@ -63,10 +68,11 @@ springboot-init-master/
     │   │   ├── util/
     │   │   └── web/             # 全局异常、TraceId
     │   ├── config/
-    │   │   ├── web/             # CORS、Jackson
+    │   │   ├── web/             # CORS、Jackson、OpenAPI
     │   │   ├── database/        # MP 分页与自动填充
     │   │   ├── auth/            # Sa-Token
     │   │   └── oss/             # COS
+    │   ├── controller/          # 接口（含测试 ping）
     │   └── mapper/
     └── resources/
         ├── application.yml
@@ -109,10 +115,11 @@ springboot-init-master/
 | 用途 | 地址 |
 |------|------|
 | 接口文档 | http://localhost:8101/api/doc.html |
+| 测试接口 | http://localhost:8101/api/test/ping |
 | OpenAPI | http://localhost:8101/api/v3/api-docs |
 | 健康检查 | http://localhost:8101/api/actuator/health |
 
-> 默认开启 Sa-Token 登录校验；文档、Actuator、以及预留的 `/user/login`、`/user/register` 已放行。业务登录接口实现后即可对接。
+> 默认开启 Sa-Token 登录校验；文档、Actuator、`/test/**`，以及预留的 `/user/login`、`/user/register` 已放行。
 
 ## 使用约定（简要）
 
@@ -120,6 +127,7 @@ springboot-init-master/
 - 实体公共字段：继承 `BaseDO`（`createTime` / `updateTime` / `isDelete`）
 - 分页：入参可用 `PageRequest`，出参可用 `PageInfo.of(page)`
 - 追踪：日志带 `traceId`，响应头 `X-Trace-Id`，`Result.requestId` 自动填充
+- 时间：统一 `LocalDateTime` 等，JSON 格式为 `yyyy-MM-dd HH:mm:ss`（见 `DateConstant` / `JsonConfig`）
 - COS：设置 `cos.enabled=true` 并填写密钥后再使用
 
 ## 后续规划

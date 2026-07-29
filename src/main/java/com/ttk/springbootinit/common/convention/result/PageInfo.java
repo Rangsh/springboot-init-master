@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * 分页响应
+ *
+ * @author Rangsh
  */
 @Data
 public class PageInfo<T> {

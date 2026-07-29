@@ -5,6 +5,8 @@ import com.ttk.springbootinit.common.convention.errorcode.IErrorCode;
 
 /**
  * 客户端异常
+ *
+ * @author Rangsh
  */
 public class ClientException extends AbstractException {
 

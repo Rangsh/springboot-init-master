@@ -2,6 +2,8 @@ package com.ttk.springbootinit.common.convention.errorcode;
 
 /**
  * 基础错误码（A 客户端 / B 系统 / C 第三方）
+ *
+ * @author Rangsh
  */
 public enum BaseErrorCode implements IErrorCode {
 

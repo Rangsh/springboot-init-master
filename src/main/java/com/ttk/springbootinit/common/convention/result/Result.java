@@ -8,6 +8,8 @@ import java.io.Serializable;
 
 /**
  * 全局返回对象
+ *
+ * @author Rangsh
  */
 @Data
 @Accessors(chain = true)

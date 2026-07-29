@@ -10,6 +10,10 @@ spring:
     name: springboot-init-master
   profiles:
     active: dev
+  jackson:
+    time-zone: Asia/Shanghai
+    serialization:
+      write-dates-as-timestamps: false
   servlet:
     multipart:
       max-file-size: 10MB
@@ -66,15 +70,30 @@ sa-token:
   is-print: false
 
 springdoc:
-  api-docs:
-    path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: default
+      display-name: 默认接口
+      paths-to-match: /**
+      packages-to-scan: com.ttk.springbootinit.controller
 
 knife4j:
   enable: true
   setting:
     language: zh_cn
+    enable-swagger-models: true
+    enable-document-manage: true
+    swagger-model-name: 实体类列表
+  # 本地开发关闭文档 Basic 认证；上线可在 prod 打开
+  production: false
+  basic:
+    enable: false
 
 management:
   endpoints:

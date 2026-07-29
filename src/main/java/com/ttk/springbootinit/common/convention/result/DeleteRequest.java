@@ -4,6 +4,8 @@ import lombok.Data;
 
 /**
  * 删除请求
+ *
+ * @author Rangsh
  */
 @Data
 public class DeleteRequest {

@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 主类（项目启动入口）
+ *
+ * @author Rangsh
  */
 @SpringBootApplication
 @MapperScan("com.ttk.springbootinit.mapper")

@@ -5,19 +5,21 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 数据库实体公共字段（单体项目实体可继承）
+ *
+ * @author Rangsh
  */
 @Data
 public class BaseDO {
 
     @TableField(fill = FieldFill.INSERT)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 逻辑删除：0 未删除，1 已删除

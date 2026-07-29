@@ -4,6 +4,8 @@ import cn.hutool.core.util.StrUtil;
 
 /**
  * SQL 相关工具
+ *
+ * @author Rangsh
  */
 public final class SqlUtils {
 

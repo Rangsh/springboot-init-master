@@ -4,6 +4,8 @@ import com.ttk.springbootinit.common.convention.errorcode.IErrorCode;
 
 /**
  * 抛异常工具
+ *
+ * @author Rangsh
  */
 public final class ThrowUtils {
 

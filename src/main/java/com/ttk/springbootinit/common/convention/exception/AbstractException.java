@@ -8,6 +8,8 @@ import java.util.Optional;
 
 /**
  * 抽象异常：客户端 / 服务端 / 远程调用
+ *
+ * @author Rangsh
  */
 @Getter
 public abstract class AbstractException extends RuntimeException {

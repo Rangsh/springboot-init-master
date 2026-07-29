@@ -2,6 +2,8 @@ package com.ttk.springbootinit.common.constant;
 
 /**
  * 链路追踪相关常量
+ *
+ * @author Rangsh
  */
 public final class TraceConstant {
 

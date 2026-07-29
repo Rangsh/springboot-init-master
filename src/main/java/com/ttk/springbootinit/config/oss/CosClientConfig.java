@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * 腾讯云 COS 客户端（仅 cos.enabled=true 时装配）
+ *
+ * @author Rangsh
  */
 @Data
 @Configuration

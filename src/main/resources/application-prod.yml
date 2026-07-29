@@ -33,6 +33,7 @@ management:
 
 knife4j:
   enable: false
+  production: true
 
 cos:
   enabled: ${COS_ENABLED:false}

@@ -12,6 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Sa-Token 登录拦截配置
+ *
+ * @author Rangsh
  */
 @Configuration
 public class SaTokenConfig implements WebMvcConfigurer {
@@ -43,6 +45,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
                         "/v3/api-docs/**",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
+                        "/test/**",
                         "/user/login",
                         "/user/register"
                 );

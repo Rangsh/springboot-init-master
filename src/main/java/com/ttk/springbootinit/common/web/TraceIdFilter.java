@@ -17,6 +17,8 @@ import java.io.IOException;
 
 /**
  * 请求追踪：写入 MDC，并回写响应头
+ *
+ * @author Rangsh
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
