@@ -1,0 +1,15 @@
+# 生产环境覆盖项
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+logging:
+  level:
+    root: warn
+    com.ttk: info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

@@ -1,0 +1,96 @@
+server:
+  address: 0.0.0.0
+  port: ${SERVER_PORT:8101}
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: springboot-init-master
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:springboot_init}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      pool-name: SpringbootInitHikariPool
+  data:
+    redis:
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 10s
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    # SQL 日志仅在 application-dev.yml 中开启
+    log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+sa-token:
+  token-name: Authorization
+  timeout: 2592000
+  is-concurrent: true
+  is-share: true
+  token-style: uuid
+  is-log: false
+  is-read-cookie: false
+  is-read-header: true
+  is-read-body: false
+  token-prefix: Bearer
+  is-print: false
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    defaults:
+      enabled: true
+
+# 腾讯云 COS（业务代码读取，需自行替换）
+cos:
+  client:
+    access-key: ${COS_ACCESS_KEY:xxx}
+    secret-key: ${COS_SECRET_KEY:xxx}
+    region: ${COS_REGION:ap-guangzhou}
+    bucket: ${COS_BUCKET:xxx}
