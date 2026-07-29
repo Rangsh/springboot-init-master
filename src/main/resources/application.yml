@@ -1,6 +1,7 @@
+# 公共配置（默认面向本地开发，请按本机环境修改）
 server:
   address: 0.0.0.0
-  port: ${SERVER_PORT:8101}
+  port: 8101
   servlet:
     context-path: /api
 
@@ -8,29 +9,29 @@ spring:
   application:
     name: springboot-init-master
   profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
+    active: dev
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 20MB
+  # 本地 MySQL
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST:127.0.0.1}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:springboot_init}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:123456}
+    url: jdbc:mysql://127.0.0.1:3306/springboot_init?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 123456
     hikari:
       maximum-pool-size: 10
-      minimum-idle: 5
+      minimum-idle: 2
       connection-timeout: 5000
-      idle-timeout: 600000
-      max-lifetime: 1800000
       pool-name: SpringbootInitHikariPool
+  # 本地 Redis
   data:
     redis:
-      host: ${REDIS_HOST:127.0.0.1}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD:}
-      database: ${REDIS_DATABASE:0}
+      host: 127.0.0.1
+      port: 6379
+      password:
+      database: 0
       timeout: 10s
       lettuce:
         pool:
@@ -42,7 +43,7 @@ spring:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
-    # SQL 日志仅在 application-dev.yml 中开启
+    # SQL 日志在 application-dev.yml 打开
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
   global-config:
     db-config:
@@ -50,6 +51,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
+# Sa-Token（Header: Authorization: Bearer <token>）
 sa-token:
   token-name: Authorization
   timeout: 2592000
@@ -79,23 +81,16 @@ management:
     web:
       exposure:
         include: health,info
-  endpoint:
-    health:
-      probes:
-        enabled: true
-  health:
-    defaults:
-      enabled: true
 
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n"
 
-# 腾讯云 COS（默认关闭，开启时设置 cos.enabled=true 并填写真实密钥）
+# 腾讯云 COS（本地默认关闭，需要时改为 true 并填写密钥）
 cos:
-  enabled: ${COS_ENABLED:false}
+  enabled: false
   client:
-    access-key: ${COS_ACCESS_KEY:}
-    secret-key: ${COS_SECRET_KEY:}
-    region: ${COS_REGION:ap-guangzhou}
-    bucket: ${COS_BUCKET:}
+    access-key:
+    secret-key:
+    region: ap-guangzhou
+    bucket:
