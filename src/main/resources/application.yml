@@ -87,10 +87,15 @@ management:
     defaults:
       enabled: true
 
-# 腾讯云 COS（业务代码读取，需自行替换）
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%X{traceId}] %-5level %logger{36} - %msg%n"
+
+# 腾讯云 COS（默认关闭，开启时设置 cos.enabled=true 并填写真实密钥）
 cos:
+  enabled: ${COS_ENABLED:false}
   client:
-    access-key: ${COS_ACCESS_KEY:xxx}
-    secret-key: ${COS_SECRET_KEY:xxx}
+    access-key: ${COS_ACCESS_KEY:}
+    secret-key: ${COS_SECRET_KEY:}
     region: ${COS_REGION:ap-guangzhou}
-    bucket: ${COS_BUCKET:xxx}
+    bucket: ${COS_BUCKET:}
