@@ -21,6 +21,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.validation.Valid;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +43,7 @@ import java.util.Map;
 @Tag(name = "AI 接口")
 @RestController
 @RequestMapping("/ai")
+@ConditionalOnProperty(prefix = "llm", name = "enabled", havingValue = "true")
 public class AiController {
 
     private static final Logger log = LoggerFactory.getLogger(AiController.class);

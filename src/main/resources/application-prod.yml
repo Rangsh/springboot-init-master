@@ -53,3 +53,6 @@ cos:
     secret-key: ${COS_SECRET_KEY:}
     region: ${COS_REGION:ap-guangzhou}
     bucket: ${COS_BUCKET:}
+
+llm:
+  enabled: ${LLM_ENABLED:false}

@@ -155,7 +155,7 @@ springboot-init-master/
 - 追踪：日志带 `traceId`，响应头 `X-Trace-Id`，`Result.requestId` 自动填充
 - 时间：统一 `LocalDateTime` 等，JSON 格式为 `yyyy-MM-dd HH:mm:ss`（见 `DateConstant` / `JsonConfig`）
 - COS：设置 `cos.enabled=true` 并填写密钥后再使用
-- LLM：参考 `application-ai-example.yml`，设置 `llm.enabled=true` 并配置对应 Provider 的 `api-key` 和 `base-url`
+- LLM：在 `application.yml` 中设置 `llm.enabled=true`，并启用对应 Provider（`api-key` 建议用环境变量注入）
   - 同步调用：`provider.chat(request)` → `ChatResponse`
   - 流式调用：`provider.chatStream(request, callback)` → SSE 推送
   - 工具注册：`toolRegistry.register(definition, handler)` → Agent 自动调用
