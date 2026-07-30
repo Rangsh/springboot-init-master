@@ -12,10 +12,12 @@
 [![Sa-Token](https://img.shields.io/badge/Sa--Token-1.39.0-brightgreen)](https://sa-token.cc/)
 [![Druid](https://img.shields.io/badge/Druid-1.2.25-orange)](https://github.com/alibaba/druid)
 [![Knife4j](https://img.shields.io/badge/Knife4j-4.5.0-green)](https://doc.xiaominfo.com/)
+[![OpenAI](https://img.shields.io/badge/LLM-OpenAI%20%7C%20Claude%20%7C%20DeepSeek-blueviolet)](https://platform.openai.com/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
 ## 模版定位
 
+- **AI 原生**：内置 LLM 客户端抽象层，策略模式统一 OpenAI / Claude / DeepSeek / 本地模型，开箱即用的 SSE 流式 + Agent 工具调用
 - **约定型骨架**：统一响应、错误码、全局异常、鉴权拦截、分页与基础配置先给齐
 - **不绑定具体业务**：不内置用户/订单等示例域，避免和你的业务模型冲突
 - **可扩展**：预留 MCP、Skill、Docker、SQL 等目录与依赖，按需启用
@@ -29,6 +31,9 @@
 - Sa-Token + Redis 会话，接口文档 Knife4j（OpenAPI3）
 - MyBatis-Plus（分页、逻辑删除、字段自动填充）+ Druid 连接池（本地可开监控页）
 - Redis / Redisson、腾讯云 COS（默认关闭，开关启用）
+- **LLM 客户端抽象层**（`ai/` 模块）：策略模式统一 4 个 Provider（OpenAI / Claude / DeepSeek / Ollama 本地模型）
+- SSE 流式聊天 + ReAct Agent 工具调用循环
+- Prompt 模板管理（YAML front matter + `{{变量}}` 引擎）
 - 多环境配置：`dev` / `prod`
 - 扩展占位：`mcp-server/`、`skills/`、`sql/`、Docker 相关文件
 
@@ -51,6 +56,7 @@
 | 工具 | Lombok | 1.18.36（Boot 管理） |
 | HTTP | OkHttp | 4.12.0 |
 | 对象存储 | 腾讯云 COS（`cos.enabled=true` 时启用） | 5.6.227 |
+| LLM 客户端 | OpenAI / Claude / DeepSeek / 本地模型（OkHttp + SSE） | — |
 | 扩展 | MCP SDK | 1.1.2 |
 
 ## 目录结构
@@ -80,6 +86,15 @@ springboot-init-master/
     │   │   ├── auth/            # Sa-Token
     │   │   └── oss/             # COS
     │   ├── controller/          # 接口（含测试 ping）
+    │   ├── ai/                   # LLM 客户端抽象层
+    │   │   ├── provider/         # 策略模式：LlmProvider + 4 个实现
+    │   │   ├── model/            # ChatRequest / ChatResponse / Tool 等 DTO
+    │   │   ├── config/           # LlmProperties + 条件装配
+    │   │   ├── controller/       # /ai/chat、/ai/agent 等接口
+    │   │   ├── tool/             # 工具注册表（ToolRegistry）
+    │   │   ├── prompt/           # Prompt 模板加载与渲染
+    │   │   ├── streaming/        # SSE 桥接（SseEmitterBridge）
+    │   │   └── agent/            # ReAct Agent 循环
     │   └── mapper/
     └── resources/
         ├── application.yml
@@ -126,6 +141,9 @@ springboot-init-master/
 | 测试接口 | http://localhost:8101/api/test/ping |
 | Druid 监控 | http://localhost:8101/api/druid/index.html（`admin` / `admin`） |
 | 健康检查 | http://localhost:8101/api/actuator/health |
+| AI 同步聊天 | http://localhost:8101/api/ai/chat（需 `llm.enabled=true`） |
+| AI 流式聊天 | http://localhost:8101/api/ai/chat/stream（SSE） |
+| AI Agent | http://localhost:8101/api/ai/agent（工具调用） |
 
 > 默认开启 Sa-Token 登录校验；Knife4j、Actuator、Druid 监控、`/test/**`，以及预留的 `/user/login`、`/user/register` 已放行。本地文档地址见上；生产默认关闭 springdoc。
 
@@ -137,6 +155,11 @@ springboot-init-master/
 - 追踪：日志带 `traceId`，响应头 `X-Trace-Id`，`Result.requestId` 自动填充
 - 时间：统一 `LocalDateTime` 等，JSON 格式为 `yyyy-MM-dd HH:mm:ss`（见 `DateConstant` / `JsonConfig`）
 - COS：设置 `cos.enabled=true` 并填写密钥后再使用
+- LLM：参考 `application-ai-example.yml`，设置 `llm.enabled=true` 并配置对应 Provider 的 `api-key` 和 `base-url`
+  - 同步调用：`provider.chat(request)` → `ChatResponse`
+  - 流式调用：`provider.chatStream(request, callback)` → SSE 推送
+  - 工具注册：`toolRegistry.register(definition, handler)` → Agent 自动调用
+  - Prompt 模板：在 `prompt/*.md` 中添加 YAML front matter + `{{变量}}`
 
 ## 后续规划
 
